@@ -1,0 +1,30 @@
+import os
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
+os.makedirs("static", exist_ok=True)
+os.makedirs("templates", exist_ok=True)
+
+app = FastAPI(title="FitBuddy AI")
+
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.post("/generate", response_class=HTMLResponse)
+async def generate_plan(
+    request: Request, 
+    age: int = Form(...), 
+    weight: float = Form(...), 
+    goal: str = Form(...)
+):
+    sample_plan = f"Age: {age}, Weight: {weight}kg, Goal: {goal}. Your AI Plan is creating..."
+    return templates.TemplateResponse(
+        "result.html", 
+        {"request": request, "plan": sample_plan}
+    ) 
