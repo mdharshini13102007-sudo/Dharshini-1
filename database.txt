@@ -1,0 +1,28 @@
+[11:33 am, 27/09/2026] Paithiyameee❤️🫂💎: def save_user(user_id: int, name: str, age: int, weight: float, goal: str, intensity: str):
+    db = SessionLocal()
+    existing = db.query(User).filter_by(id=user_id).first()
+
+    if existing:
+        # Update existing user info
+        existing.name = name
+        existing.age = age
+        existing.weight = weight
+        existing.goal = goal
+        existing.intensity = intensity
+
+    else:
+        # Create a new user
+        user = User(
+            id=user_id,
+            name=name,
+            age=age,
+            weight=weight,
+            goal=goal,
+            intensity=intensity,
+            schedule=7  # default schedule or logic
+        )
+        db.add(user)
+
+    db.commit()
+    db.close()
+[11:34 am, 27/09/2026] Paithiyameee❤️🫂💎: Avlodha program
