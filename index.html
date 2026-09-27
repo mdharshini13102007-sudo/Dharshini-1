@@ -1,0 +1,49 @@
+import os
+from google import genai
+from fastapi import APIRouter, Form, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+router = APIRouter()
+templates = Jinja2Templates(directory="templates")
+
+client = genai.Client()
+
+@router.post("/update-plan", response_class=HTMLResponse)
+async def update_fitness_plan(
+    request: Request,
+    current_plan: str = Form(...),  
+    user_feedback: str = Form(...)  
+):
+    prompt = f"""
+    You are an expert AI Fitness Coach. 
+    A user has the following current workout plan:
+    {current_plan}
+    
+    The user provided this feedback about the plan:
+    "{user_feedback}"
+    
+    Based on their feedback, modify the current workout plan. 
+    Provide the response in two clear sections:
+    1. *Updated Workout Plan*: The revised routine.
+    2. *Coach's Tip*: A motivational or tactical tip based on their adjustment.
+    
+    Please provide the final output text in Tamil language.
+    """
+    
+    try:
+        response = client.models.generate_content(
+            model='gemini-2.5-pro',
+            contents=prompt,
+        )
+        updated_text = response.text
+    except Exception as e:
+        updated_text = f"An error occurred while updating the plan: {str(e)}"
+
+    return templates.TemplateResponse(
+        "result.html", 
+        {
+            "request": request, 
+            "workout_plan": updated_text, 
+            "tip": "Your plan has been updated based on your feedback!",
+            "message": "Success"
