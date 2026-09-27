@@ -1,0 +1,13 @@
+body {
+    background-image: url('/static/images/gym-bg.jpg');
+    
+    background-size: cover;
+    
+    background-repeat: no-repeat;
+    
+    background-position: center;
+    background-attachment: fixed;
+   
+    background-color: rgba(0, 0, 0, 0.5);
+    background-blend-mode: overlay;
+}
